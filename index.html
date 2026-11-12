@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waktu Solat Malaysia • Cyberpunk Edition</title>
+    <style>
+        /* Gaya Asas Cyberpunk / Dark Mode Minimalist */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            color: #f0f0f0;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: #141414;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            border: 1px solid #222;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Susun Atur Header (Grid 3 Kolum Seimbang) */
+        .header {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            margin-bottom: 24px;
+            gap: 8px;
+        }
+
+        /* Kiri: Nama Lokasi Utama */
+        .location-info {
+            text-align: left;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .location-info:hover {
+            background: rgba(0, 243, 255, 0.08);
+        }
+
+        .location-info h2 {
+            font-size: 1.0rem;
+            color: #00f3ff;
+            font-weight: 700;
+            line-height: 1.2;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .location-sub {
+            font-size: 0.72rem;
+            color: #777;
+            margin-top: 2px;
+        }
+
+        /* Tengah: Butang Kiblat */
+        .qibla-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-self: center;
+            cursor: pointer;
+        }
+
+        .qibla-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #00f3ff;
+            margin-bottom: 4px;
+            font-weight: 700;
+            opacity: 0.85;
+        }
+
+        .qibla-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(0, 243, 255, 0.08);
+            border: 1.5px solid #00f3ff;
+            color: #00f3ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.25), inset 0 0 8px rgba(0, 243, 255, 0.15);
+        }
+
+        .qibla-container:hover .qibla-btn {
+            background: rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 22px rgba(0, 243, 255, 0.5);
+            transform: scale(1.06);
+        }
+
+        .qibla-btn svg {
+            width: 22px;
+            height: 22px;
+            transition: transform 0.5s ease;
+        }
+
+        .qibla-container:hover .qibla-btn svg {
+            transform: rotate(45deg);
+        }
+
+        /* Kanan: Tarikh Hijriah & Masihi */
+        .date-section {
+            text-align: right;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .date-section:hover {
+            background: rgba(0, 243, 255, 0.08);
+        }
+
+        .date-hijri {
+            font-size: 0.76rem;
+            color: #a5f3fc;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .date-masihi {
+            font-size: 0.68rem;
+            color: #777;
+            margin-top: 2px;
+        }
+
+        /* ----------------------------------------------------
+           KOTAK UTAMA DENGAN KESAN API BIRU (NEON PLASMA GLOW)
+           ---------------------------------------------------- */
+        .hero-solat {
+            position: relative;
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 24px 20px;
+            text-align: center;
+            margin-bottom: 24px;
+            z-index: 1;
+        }
+
+        .hero-solat::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: linear-gradient(45deg, #0051ff, #00f3ff, #00ffee, #0051ff);
+            background-size: 400%;
+            border-radius: 22px;
+            z-index: -1;
+            animation: blueFlameGlow 6s linear infinite;
+            filter: blur(8px);
+            opacity: 0.85;
+        }
+
+        .hero-solat::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #161616;
+            border-radius: 20px;
+            z-index: -1;
+        }
+
+        @keyframes blueFlameGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-solat .next-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00f3ff;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .hero-solat .solat-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        .hero-solat .countdown {
+            font-size: 1.4rem;
+            font-family: monospace;
+            color: #a5f3fc;
+            background: rgba(0, 243, 255, 0.08);
+            padding: 6px 14px;
+            border-radius: 8px;
+            display: inline-block;
+            border: 1px solid rgba(0, 243, 255, 0.15);
+        }
+
+        /* Senarai Waktu Solat */
+        .solat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .solat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 11px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .solat-item.syuruk {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px dashed rgba(255, 255, 255, 0.08);
+            color: #999;
+            font-size: 0.88rem;
+            padding: 8px 16px;
+        }
+
+        .solat-item.current {
+            border: 1.5px solid #00f3ff;
+            background: linear-gradient(90deg, rgba(0, 243, 255, 0.14), rgba(0, 243, 255, 0.04));
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+        }
+
+        .solat-item.next {
+            border: 1px solid rgba(255, 215, 0, 0.45);
+            background: rgba(255, 215, 0, 0.04);
+        }
+
+        .badge {
+            font-size: 0.62rem;
+            padding: 2px 7px;
+            border-radius: 6px;
+            margin-left: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+
+        .badge-current {
+            background: #00f3ff;
+            color: #0d0d0d;
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+        }
+
+        .badge-next {
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+        }
+
+        /* Kad Harian */
+        .daily-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 243, 255, 0.25);
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .daily-card:hover {
+            border-color: #00f3ff;
+            background: rgba(0, 243, 255, 0.04);
+        }
+
+        .daily-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .daily-tag {
+            font-size: 0.72rem;
+            color: #00f3ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .toggle-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            cursor: pointer;
+            font-size: 0.72rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn:hover {
+            border-color: #00f3ff;
+            color: #00f3ff;
+        }
+
+        .daily-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .daily-desc {
+            font-size: 0.84rem;
+            color: #aaa;
+            line-height: 1.45;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .read-more-hint {
+            font-size: 0.72rem;
+            color: #00f3ff;
+            margin-top: 8px;
+            display: inline-block;
+            opacity: 0.8;
+        }
+
+        /* MODALS */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #161616;
+            border: 1px solid #00f3ff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 85vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #262626;
+        }
+
+        .modal-header h3 {
+            color: #00f3ff;
+            font-size: 1.05rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.4rem;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        .gps-btn {
+            width: 100%;
+            padding: 11px 14px;
+            background: rgba(0, 243, 255, 0.12);
+            border: 1px solid #00f3ff;
+            color: #00f3ff;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .gps-btn:hover {
+            background: rgba(0, 243, 255, 0.25);
+            box-shadow: 0 0 12px rgba(0, 243, 255, 0.3);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #0d0d0d;
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #00f3ff;
+        }
+
+        .zone-list {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-right: 4px;
+        }
+
+        .zone-option {
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .zone-option:hover, .zone-option.selected {
+            border-color: #00f3ff;
+            background: rgba(0, 243, 255, 0.08);
+        }
+
+        .zone-option span {
+            color: #00f3ff;
+            font-weight: 700;
+            margin-right: 6px;
+        }
+
+        .compass-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .compass-dial {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 2px solid #00f3ff;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.2);
+            margin-bottom: 16px;
+            background: radial-gradient(circle, rgba(0,243,255,0.08) 0%, rgba(0,0,0,0) 70%);
+        }
+
+        .compass-needle {
+            width: 4px;
+            height: 130px;
+            background: linear-gradient(to top, #444 50%, #00f3ff 50%);
+            border-radius: 2px;
+            position: relative;
+            transition: transform 0.2s ease-out;
+        }
+
+        .compass-needle::after {
+            content: '🕋';
+            position: absolute;
+            top: -16px;
+            left: -10px;
+            font-size: 1.2rem;
+        }
+
+        .story-full-text {
+            overflow-y: auto;
+            font-size: 0.92rem;
+            line-height: 1.65;
+            color: #ddd;
+            white-space: pre-line;
+        }
+
+        .reflection-box {
+            margin-top: 16px;
+            padding: 12px;
+            background: rgba(0, 243, 255, 0.06);
+            border-left: 3px solid #00f3ff;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #a5f3fc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="location-info" onclick="openZoneModal()" title="Klik untuk tukar zon">
+                <h2 id="displayZoneName">Memuatkan... ▾</h2>
+                <div class="location-sub" id="displayZoneCode">Zon: ...</div>
+            </div>
+
+            <!-- Kompas Kiblat -->
+            <div class="qibla-container" onclick="openQiblaModal()" title="Kompas Arah Kiblat">
+                <span class="qibla-label">QIBLAT</span>
+                <div class="qibla-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="rgba(0, 243, 255, 0.3)"></polygon>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="date-section" onclick="openZoneModal()" title="Klik untuk tukar zon">
+                <div class="date-hijri" id="displayHijriDate">--</div>
+                <div class="date-masihi" id="displayMasihiDate">--</div>
+            </div>
+        </div>
+
+        <!-- Hero Card dengan Kesan Api Biru -->
+        <div class="hero-solat">
+            <div class="next-label" id="heroNextLabel">Menuju Seterusnya</div>
+            <div class="solat-name" id="heroSolatName">--</div>
+            <div class="countdown" id="heroCountdown">00:00:00</div>
+        </div>
+
+        <!-- Senarai Waktu Solat -->
+        <div class="solat-list" id="solatListContainer">
+            <!-- Dijana secara automatik oleh JavaScript -->
+        </div>
+
+        <!-- Kad Inspirasi Harian -->
+        <div class="daily-card" onclick="openStoryModal()">
+            <div class="daily-card-header">
+                <span class="daily-tag" id="cardTag">#SahabatHariIni</span>
+                <button class="toggle-btn" onclick="event.stopPropagation(); toggleDailyMode();">Tukar ke Hadis ⇄</button>
+            </div>
+            <div class="daily-title" id="cardTitle">Memuatkan...</div>
+            <div class="daily-desc" id="cardDesc">...</div>
+            <span class="read-more-hint">Sentuh kad untuk bacaan penuh →</span>
+        </div>
+    </div>
+
+    <!-- MODAL 1: ZON + GPS -->
+    <div class="modal" id="zoneModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Pilih Zon Waktu Solat</h3>
+                <button class="close-btn" onclick="closeModal('zoneModal')">&times;</button>
+            </div>
+            
+            <button class="gps-btn" onclick="detectUserLocationGPS()">
+                📍 Dapatkan Lokasi GPS Semasa
+            </button>
+
+            <input type="text" class="search-input" id="zoneSearchInput" placeholder="Cari daerah atau negeri..." onkeyup="filterZones()">
+            <div class="zone-list" id="zoneListContainer"></div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: KIBLAT -->
+    <div class="modal" id="qiblaModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Penunjuk Arah Kiblat</h3>
+                <button class="close-btn" onclick="closeModal('qiblaModal')">&times;</button>
+            </div>
+            <div class="compass-box">
+                <div class="compass-dial">
+                    <div class="compass-needle" id="compassNeedle" style="transform: rotate(292deg);"></div>
+                </div>
+                <h4 style="color: #00f3ff; margin-bottom: 6px;">292° Barat Laut (Malaysia)</h4>
+                <p style="font-size: 0.82rem; color: #aaa; line-height: 1.4;" id="qiblaStatusText">
+                    Letakkan telefon secara mendatar. Anak panah menghala ke arah Kaabah (Mekah).
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: BACAAN -->
+    <div class="modal" id="storyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalStoryTag">#SahabatHariIni</h3>
+                <button class="close-btn" onclick="closeModal('storyModal')">&times;</button>
+            </div>
+            <h4 style="color: #fff; font-size: 1.15rem; margin-bottom: 12px;" id="modalStoryTitle">Tajuk</h4>
+            <div class="story-full-text" id="modalStoryBody">Isi kandungan penuh...</div>
+            <div class="reflection-box" id="modalStoryReflection">Pengajaran...</div>
+        </div>
+    </div>
+
+    <script>
+        const malaysiaZones = [
+            { code: "SGR01", name: "Gombak, Petaling, Sepang, Hulu Langat, Hulu Selangor, S.Alam, Puncak Alam", state: "Selangor" },
+            { code: "SGR02", name: "Kuala Selangor, Sabak Bernam", state: "Selangor" },
+            { code: "SGR03", name: "Klang, Kuala Langat", state: "Selangor" },
+            { code: "WLY01", name: "Kuala Lumpur, Putrajaya", state: "Wilayah Persekutuan" },
+            { code: "WLY02", name: "Labuan", state: "Wilayah Persekutuan" },
+            { code: "JHR01", name: "Pulau Aur dan Pulau Pemanggil", state: "Johor" },
+            { code: "JHR02", name: "Johor Bahru, Kota Tinggi, Mersing, Kulai", state: "Johor" },
+            { code: "JHR03", name: "Kluang, Pontian", state: "Johor" },
+            { code: "JHR04", name: "Batu Pahat, Muar, Segamat, Gemas Johor, Tangkak", state: "Johor" },
+            { code: "KDH01", name: "Kota Setar, Kubang Pasu, Pokok Sena", state: "Kedah" },
+            { code: "KDH02", name: "Kuala Muda, Yan, Pendang", state: "Kedah" },
+            { code: "KDH03", name: "Padang Terap, Sik", state: "Kedah" },
+            { code: "KDH04", name: "Baling", state: "Kedah" },
+            { code: "KDH05", name: "Bandar Baharu, Kulim", state: "Kedah" },
+            { code: "KDH06", name: "Langkawi", state: "Kedah" },
+            { code: "KDH07", name: "Puncak Gunung Jerai", state: "Kedah" },
+            { code: "KTN01", name: "Bachok, Kota Bharu, Machang, Pasir Mas, Pasir Puteh, Tanah Merah, Tumpat, Kuala Krai", state: "Kelantan" },
+            { code: "KTN02", name: "Gua Musang, Jeli, Lojing", state: "Kelantan" },
+            { code: "MLK01", name: "Seluruh Negeri Melaka", state: "Melaka" },
+            { code: "NGS01", name: "Tampin, Jempol", state: "Negeri Sembilan" },
+            { code: "NGS02", name: "Jelebu, Kuala Pilah, Rembau", state: "Negeri Sembilan" },
+            { code: "NGS03", name: "Port Dickson, Seremban", state: "Negeri Sembilan" },
+            { code: "PHG01", name: "Pulau Tioman", state: "Pahang" },
+            { code: "PHG02", name: "Kuantan, Pekan, Rompin, Muadzam Shah", state: "Pahang" },
+            { code: "PHG03", name: "Jerantut, Temerloh, Maran, Bera, Chenor, Jengka", state: "Pahang" },
+            { code: "PHG04", name: "Bentong, Lipis, Raub", state: "Pahang" },
+            { code: "PHG05", name: "Genting Sempah, Janda Baik, Bukit Tinggi", state: "Pahang" },
+            { code: "PHG06", name: "Cameron Highlands, Genting Highlands, Bukit Fraser", state: "Pahang" },
+            { code: "PRK01", name: "Tapah, Slim River, Tanjung Malim", state: "Perak" },
+            { code: "PRK02", name: "Kuala Kangsar, Sg. Siput, Ipoh, Batu Gajah, Kampar", state: "Perak" },
+            { code: "PRK03", name: "Lenggong, Pengkalan Hulu, Grik", state: "Perak" },
+            { code: "PRK04", name: "Temengor, Belum", state: "Perak" },
+            { code: "PRK05", name: "Kg Gajah, Teluk Intan, Bagan Datuk, Seri Iskandar, Beruas, Parit, Lumut, Sitiawan", state: "Perak" },
+            { code: "PRK06", name: "Selama, Taiping, Bagan Serai, Parit Buntar", state: "Perak" },
+            { code: "PRK07", name: "Bukit Larut", state: "Perak" },
+            { code: "PLS01", name: "Seluruh Negeri Perlis", state: "Perlis" },
+            { code: "PNG01", name: "Seluruh Negeri Pulau Pinang", state: "Pulau Pinang" },
+            { code: "TRG01", name: "Kuala Terengganu, Marang, Kuala Nerus", state: "Terengganu" },
+            { code: "TRG02", name: "Besut, Setiu", state: "Terengganu" },
+            { code: "TRG03", name: "Hulu Terengganu", state: "Terengganu" },
+            { code: "TRG04", name: "Dungun, Kemaman", state: "Terengganu" },
+            { code: "SBH01", name: "Bahagian Sandakan (Timur), Bukit Garam, Semawang, Temanggong, Tambisan", state: "Sabah" },
+            { code: "SBH02", name: "Beluran, Telupid, Pinangah, Terusan, Kuamut", state: "Sabah" },
+            { code: "SBH03", name: "Lahad Datu, Silabukan, Kunak, Sahabat, Semporna, Tungku", state: "Sabah" },
+            { code: "SBH04", name: "Bandar Tawau, Balong, Merotai, Kalabakan", state: "Sabah" },
+            { code: "SBH05", name: "Kudat, Kota Marudu, Pitas, Pulau Banggi", state: "Sabah" },
+            { code: "SBH06", name: "Gunung Kinabalu", state: "Sabah" },
+            { code: "SBH07", name: "Kota Kinabalu, Ranau, Kota Belud, Tuaran, Penampang, Papar, Putatan", state: "Sabah" },
+            { code: "SBH08", name: "Pensiangan, Keningau, Tambunan, Nabawan", state: "Sabah" },
+            { code: "SBH09", name: "Beaufort, Kuala Penyu, Sipitang, Tenom, Long Pa Sia, Membakut, Weston", state: "Sabah" },
+            { code: "SWK01", name: "Limbang, Lawas, Sundar, Trusan", state: "Sarawak" },
+            { code: "SWK02", name: "Miri, Niah, Bekenu, Sibuti, Marudi", state: "Sarawak" },
+            { code: "SWK03", name: "Pandan, Belaga, Suai, Tatau, Sebauh, Bintulu", state: "Sarawak" },
+            { code: "SWK04", name: "Sibu, Mukah, Dalat, Song, Igan, Oya, Balingian, Kanowit, Kapit", state: "Sarawak" },
+            { code: "SWK05", name: "Sarikei, Matu, Julau, Rajang, Daro, Bintangor, Belawai", state: "Sarawak" },
+            { code: "SWK06", name: "Lubok Antu, Sri Aman, Roban, Debak, Kabong, Lingga, Engkelili, Betong, Spaoh", state: "Sarawak" },
+            { code: "SWK07", name: "Serian, Simunjan, Samarahan, Sebuyau, Meludam", state: "Sarawak" },
+            { code: "SWK08", name: "Kuching, Bau, Lundu, Sematan", state: "Sarawak" },
+            { code: "SWK09", name: "Zon Khas (Kampung Patarikan)", state: "Sarawak" }
+        ];
+
+        const sahabatStories = [
+            {
+                title: "Abu Bakar As-Siddiq r.a.",
+                summary: "Hartawan yang memerdekakan Bilal bin Rabah semata-mata kerana Allah, membuktikan persaudaraan seimanan mengatasi segala harta dunia.",
+                full: "Ketika Bilal bin Rabah diseksa dengan batu besar di tengah padang pasir Mekah oleh tuannya Umayyah bin Khalaf, Abu Bakar As-Siddiq lalu dan melihat penderitaan tersebut.\n\nTanpa berfikir panjang tentang kerugian duniawi, beliau menawarkan harga yang tinggi untuk membeli dan terus memerdekakan Bilal. Apabila orang musyrikin menyindir bahawa Abu Bakar berbuat demikian kerana mengharapkan balasan jasa daripada Bilal, turunlah ayat al-Quran yang memuji keikhlasannya yang hanya mengharapkan keredaan Allah semata-mata.",
+                reflection: "Cyber-Takeaway: Harta yang sebenar bukanlah apa yang tersimpan dalam akaun, tetapi apa yang dibelanjakan untuk membebaskan dan membantu insan lain."
+            },
+            {
+                title: "Mus'ab bin Umair r.a.",
+                summary: "Duta pertama Islam yang sanggup meninggalkan kemewahan bangsawan Mekah demi menyebarkan dakwah hingga ke Madinah.",
+                full: "Sebelum memeluk Islam, Mus'ab adalah pemuda paling tampan dan mewah di Mekah. Pakaiannya ditenun khas dan wangiannya dapat dihidu dari jauh.\n\nNamun setelah memilih Islam, ibunya memutuskan segala kemewahan tersebut. Mus'ab redha memakai pakaian kasar yang bertampal. Rasulullah SAW kemudian mengutusnya menjadi duta ke Madinah sebelum peristiwa Hijrah. Dengan kebijaksanaan dan akhlaknya yang lembut, ramai pembesar Madinah memeluk Islam di tangannya.",
+                reflection: "Cyber-Takeaway: Pengaruh sebenar datang daripada keikhlasan karakter dan ilmu, bukan daripada jenama pakaian atau kemewahan luaran."
+            },
+            {
+                title: "Salman Al-Farisi r.a.",
+                summary: "Pencari kebenaran merentas benua yang mencetuskan idea strategi parit (Khandaq) dalam mempertahankan Madinah.",
+                full: "Salman mengembara jauh dari Parsi, berpindah dari satu guru ke satu guru demi mencari agama yang benar, sehingga akhirnya beliau dijual sebagai hamba di Madinah dan bertemu Rasulullah SAW.\n\nKepakarannya dalam ilmu strategi ketenteraan Parsi terbukti apabila beliau mencadangkan penggalian parit besar di utara Madinah semasa Perang Ahzab—satu taktik yang belum pernah dikenali oleh bangsa Arab ketika itu dan berjaya menyelamatkan umat Islam daripada kepungan musuh.",
+                reflection: "Cyber-Takeaway: Jangan pernah berhenti belajar dan menguasai kemahiran baru; ilmu teknikal anda hari ini mungkin menjadi penyelamat ummah esok."
+            }
+        ];
+
+        const hadithList = [
+            {
+                title: "Senyuman adalah Sedekah",
+                summary: "“Senyumanmu kepada saudaramu adalah sedekah bagimu.” (Riwayat al-Tirmizi).",
+                full: "Daripada Abu Dzar r.a., Rasulullah SAW bersabda: “Senyumanmu kepada saudaramu adalah sedekah bagimu, amar makruf dan nahi mungkar yang engkau lakukan adalah sedekah, dan menunjukkan jalan kepada seseorang yang tersesat juga adalah sedekah bagimu.” (Hadis Riwayat al-Tirmizi).",
+                reflection: "Cyber-Takeaway: Kebaikan tidak semestinya memerlukan modal besar. Mulakan interaksi hari ini dengan wajah yang tenang dan mesra."
+            },
+            {
+                title: "Amalan Paling Dicintai Allah",
+                summary: "“Amalan yang paling dicintai oleh Allah adalah amalan yang berterusan walaupun sedikit.” (Riwayat al-Bukhari & Muslim).",
+                full: "Daripada Aisyah r.a., Nabi Muhammad SAW bersabda: “Beramallah mengikut kemampuan kamu, kerana sesungguhnya Allah tidak akan jemu sehingga kamu sendiri yang jemu. Dan sesungguhnya amalan yang paling dicintai oleh Allah adalah yang dilakukan secara istiqamah (berterusan) walaupun sedikit.”",
+                reflection: "Cyber-Takeaway: Konsistensi mengalahkan intensiti. Sedikit tetapi disiplin setiap hari jauh lebih bernilai daripada semangat hangat-hangat tahi ayam."
+            },
+            {
+                title: "Menjaga Lisan dan Tangan",
+                summary: "“Seorang Muslim yang sejati adalah yang menyelamatkan kaum Muslimin lain daripada keburukan lidah dan tangannya.”",
+                full: "Daripada Abdullah bin Amr r.a., Rasulullah SAW bersabda: “Seorang Muslim yang sempurna keislamannya ialah apabila orang Islam yang lain selamat daripada gangguan lidah dan tangannya.” (Riwayat al-Bukhari dan Muslim).",
+                reflection: "Cyber-Takeaway: Di era digital ini, 'tangan' juga bermaksud jari yang menaip komen atau mesej. Pastikan setiap aksara membawa manfaat."
+            }
+        ];
+
+        let currentZone = localStorage.getItem('selectedZone') || 'SGR01';
+        let dailyMode = localStorage.getItem('dailyMode') || 'sahabat';
+        let todayPrayers = null;
+        let countdownInterval = null;
+
+        window.onload = () => {
+            renderZoneList(malaysiaZones);
+            updateDailyCard();
+            fetchPrayerTimes(currentZone);
+        };
+
+        function formatHijriDate(hijriString) {
+            const parts = hijriString.split('-');
+            if (parts.length !== 3) return hijriString;
+
+            const year = parts[0];
+            const monthNum = parseInt(parts[1], 10);
+            const day = parseInt(parts[2], 10);
+
+            const hijriMonths = [
+                "Muharram", "Safar", "Rabiulawal", "Rabiulakhir", 
+                "Jamadilawal", "Jamadilakhir", "Rejab", "Syaaban", 
+                "Ramadhan", "Syawal", "Zulkaedah", "Zulhijjah"
+            ];
+
+            const monthName = hijriMonths[monthNum - 1] || "";
+            return `${day} ${monthName} ${year}H`;
+        }
+
+        async function fetchPrayerTimes(zoneCode) {
+            const zoneObj = malaysiaZones.find(z => z.code === zoneCode) || malaysiaZones[0];
+            document.getElementById('displayZoneName').innerHTML = `${zoneObj.name.split(',')[0]} ▾`;
+            document.getElementById('displayZoneCode').innerText = `Zon: ${zoneCode}`;
+            
+            try {
+                const response = await fetch(`https://api.waktusolat.app/v2/solat/${zoneCode}`);
+                const data = await response.json();
+                
+                const now = new Date();
+                const todayDate = now.getDate();
+                const prayerData = data.prayers.find(p => p.day === todayDate) || data.prayers[0];
+                
+                document.getElementById('displayHijriDate').innerText = formatHijriDate(prayerData.hijri);
+
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                const masihiStr = now.toLocaleDateString('ms-MY', options);
+                document.getElementById('displayMasihiDate').innerText = masihiStr;
+
+                todayPrayers = [
+                    { id: 'fajr', name: 'Subuh', time: new Date(prayerData.fajr * 1000), isFardhu: true },
+                    { id: 'syuruk', name: '☀️ Syuruk', time: new Date(prayerData.syuruk * 1000), isFardhu: false },
+                    { id: 'dhuhr', name: 'Zohor', time: new Date(prayerData.dhuhr * 1000), isFardhu: true },
+                    { id: 'asr', name: 'Asar', time: new Date(prayerData.asr * 1000), isFardhu: true },
+                    { id: 'maghrib', name: 'Maghrib', time: new Date(prayerData.maghrib * 1000), isFardhu: true },
+                    { id: 'isha', name: 'Isyak', time: new Date(prayerData.isha * 1000), isFardhu: true }
+                ];
+
+                startRealtimeClock();
+            } catch (error) {
+                console.error("Ralat API:", error);
+                document.getElementById('displayHijriDate').innerText = "Tarikh Hijriah";
+                document.getElementById('displayMasihiDate').innerText = "Gagal memuatkan data.";
+            }
+        }
+
+        function formatTime12H(dateObj) {
+            return dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+        }
+
+        function startRealtimeClock() {
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            function update() {
+                if (!todayPrayers) return;
+                const now = new Date();
+
+                let currentIdx = -1;
+                let nextIdx = -1;
+
+                for (let i = 0; i < todayPrayers.length; i++) {
+                    if (now >= todayPrayers[i].time) {
+                        currentIdx = i;
+                    } else if (nextIdx === -1) {
+                        nextIdx = i;
+                    }
+                }
+
+                let nextPrayerName = "";
+                let targetTime = null;
+
+                if (nextIdx === -1) {
+                    nextPrayerName = "SUBUH (ESOK)";
+                    targetTime = new Date(todayPrayers[0].time.getTime() + 24 * 60 * 60 * 1000);
+                } else {
+                    nextPrayerName = todayPrayers[nextIdx].name.replace('☀️ ', '').toUpperCase();
+                    targetTime = todayPrayers[nextIdx].time;
+                }
+
+                document.getElementById('heroSolatName').innerText = nextPrayerName;
+                const diffMs = targetTime - now;
+                const hrs = Math.floor(diffMs / (1000 * 60 * 60));
+                const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+                document.getElementById('heroCountdown').innerText = 
+                    `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+                let priorityIndex = (currentIdx !== -1) ? currentIdx : (nextIdx !== -1 ? nextIdx : 0);
+
+                let sortedPrayers = [];
+                for (let i = 0; i < todayPrayers.length; i++) {
+                    let idx = (priorityIndex + i) % todayPrayers.length;
+                    sortedPrayers.push({ item: todayPrayers[idx], originalIndex: idx });
+                }
+
+                const listHTML = sortedPrayers.map(({ item: p, originalIndex: index }) => {
+                    const isCurrent = (index === currentIdx);
+                    const isNext = (index === nextIdx);
+                    
+                    let rowClass = "solat-item";
+                    if (!p.isFardhu) rowClass += " syuruk";
+                    if (isCurrent) rowClass += " current";
+                    if (isNext) rowClass += " next";
+
+                    let badgeHTML = "";
+                    if (isCurrent) badgeHTML = `<span class="badge badge-current">Semasa</span>`;
+                    if (isNext) badgeHTML = `<span class="badge badge-next">Seterusnya</span>`;
+
+                    let timeColor = p.isFardhu ? "#fff" : "#999";
+                    if (isCurrent) timeColor = "#00f3ff";
+                    if (isNext) timeColor = "#ffd700";
+
+                    return `
+                        <div class="${rowClass}">
+                            <div>
+                                <span style="font-weight: ${isCurrent ? '700' : '500'};">${p.name}</span>
+                                ${badgeHTML}
+                            </div>
+                            <span style="font-weight: 600; color: ${timeColor};">${formatTime12H(p.time)}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                document.getElementById('solatListContainer').innerHTML = listHTML;
+            }
+
+            update();
+            countdownInterval = setInterval(update, 1000);
+        }
+
+        function detectUserLocationGPS() {
+            if (!navigator.geolocation) {
+                alert("Pelayar web anda tidak menyokong fungsi Geolocation GPS.");
+                return;
+            }
+
+            const gpsBtn = document.querySelector('.gps-btn');
+            gpsBtn.innerText = "Mikesan Lokasi GPS...";
+
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                try {
+                    const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=ms`);
+                    const locData = await res.json();
+                    
+                    const locality = (locData.locality || locData.city || locData.principalSubdivision || "").toLowerCase();
+                    let matchedZone = malaysiaZones.find(z => z.name.toLowerCase().includes(locality));
+
+                    if (!matchedZone) {
+                        const region = (locData.principalSubdivision || "").toLowerCase();
+                        if (region.includes("selangor")) matchedZone = malaysiaZones.find(z => z.code === "SGR01");
+                        else if (region.includes("kuala lumpur") || region.includes("putrajaya")) matchedZone = malaysiaZones.find(z => z.code === "WLY01");
+                        else if (region.includes("johor")) matchedZone = malaysiaZones.find(z => z.code === "JHR02");
+                        else if (region.includes("penang") || region.includes("pulau pinang")) matchedZone = malaysiaZones.find(z => z.code === "PNG01");
+                        else if (region.includes("perak")) matchedZone = malaysiaZones.find(z => z.code === "PRK02");
+                        else if (region.includes("pahang")) matchedZone = malaysiaZones.find(z => z.code === "PHG02");
+                        else matchedZone = malaysiaZones[0];
+                    }
+
+                    selectZone(matchedZone.code);
+                    alert(`Lokasi dikesan: ${locData.locality || "Kawasan Anda"}\nZon dilaraskan ke: ${matchedZone.code}`);
+                } catch (e) {
+                    console.error(e);
+                    alert("Gagal memproses koordinat GPS. Sila pilih zon secara manual.");
+                    gpsBtn.innerText = "📍 Dapatkan Lokasi GPS Semasa";
+                }
+            }, (error) => {
+                alert("Akses GPS ditolak atau tidak tersedia. Sila benarkan akses lokasi pada pelayar anda.");
+                gpsBtn.innerText = "📍 Dapatkan Lokasi GPS Semasa";
+            }, { timeout: 10000 });
+        }
+
+        function renderZoneList(zones) {
+            const container = document.getElementById('zoneListContainer');
+            container.innerHTML = zones.map(z => `
+                <div class="zone-option ${z.code === currentZone ? 'selected' : ''}" onclick="selectZone('${z.code}')">
+                    <span>${z.code}</span> ${z.name} <small style="color:#777;">(${z.state})</small>
+                </div>
+            `).join('');
+        }
+
+        function filterZones() {
+            const keyword = document.getElementById('zoneSearchInput').value.toLowerCase();
+            const filtered = malaysiaZones.filter(z => 
+                z.name.toLowerCase().includes(keyword) || 
+                z.state.toLowerCase().includes(keyword) || 
+                z.code.toLowerCase().includes(keyword)
+            );
+            renderZoneList(filtered);
+        }
+
+        function selectZone(code) {
+            currentZone = code;
+            localStorage.setItem('selectedZone', code);
+            closeModal('zoneModal');
+            fetchPrayerTimes(code);
+            renderZoneList(malaysiaZones);
+        }
+
+        function openZoneModal() {
+            document.getElementById('zoneModal').classList.add('active');
+            document.getElementById('zoneSearchInput').focus();
+        }
+
+        function getDayOfYear() {
+            const now = new Date();
+            const start = new Date(now.getFullYear(), 0, 0);
+            const diff = now - start;
+            return Math.floor(diff / (1000 * 60 * 60 * 24));
+        }
+
+        function getTodayItem() {
+            const dayIndex = getDayOfYear();
+            if (dailyMode === 'sahabat') {
+                return sahabatStories[dayIndex % sahabatStories.length];
+            } else {
+                return hadithList[dayIndex % hadithList.length];
+            }
+        }
+
+        function updateDailyCard() {
+            const item = getTodayItem();
+            const tagEl = document.getElementById('cardTag');
+            const btnEl = document.querySelector('.toggle-btn');
+
+            if (dailyMode === 'sahabat') {
+                tagEl.innerText = "#SahabatHariIni";
+                btnEl.innerText = "Tukar ke Hadis ⇄";
+            } else {
+                tagEl.innerText = "#HadisHarian";
+                btnEl.innerText = "Tukar ke Sahabat ⇄";
+            }
+
+            document.getElementById('cardTitle').innerText = item.title;
+            document.getElementById('cardDesc').innerText = item.summary;
+        }
+
+        function toggleDailyMode() {
+            dailyMode = (dailyMode === 'sahabat') ? 'hadis' : 'sahabat';
+            localStorage.setItem('dailyMode', dailyMode);
+            updateDailyCard();
+        }
+
+        function openStoryModal() {
+            const item = getTodayItem();
+            document.getElementById('modalStoryTag').innerText = (dailyMode === 'sahabat') ? "#SahabatHariIni" : "#HadisHarian";
+            document.getElementById('modalStoryTitle').innerText = item.title;
+            document.getElementById('modalStoryBody').innerText = item.full;
+            document.getElementById('modalStoryReflection').innerText = item.reflection;
+            document.getElementById('storyModal').classList.add('active');
+        }
+
+        function openQiblaModal() {
+            document.getElementById('qiblaModal').classList.add('active');
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', handleOrientation);
+            }
+        }
+
+        function handleOrientation(event) {
+            if (event.alpha !== null) {
+                const qiblaAngle = 292;
+                const compassHeading = event.webkitCompassHeading || (360 - event.alpha);
+                const needleRotation = qiblaAngle - compassHeading;
+                document.getElementById('compassNeedle').style.transform = `rotate(${needleRotation}deg)`;
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            if (modalId === 'qiblaModal') {
+                window.removeEventListener('deviceorientation', handleOrientation);
+            }
+        }
+    </script>
+</body>
+</html>
