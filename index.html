@@ -35,7 +35,7 @@
             overflow: hidden;
         }
 
-        /* Susun Atur Header */
+        /* Susun Atur Header (Grid 3 Kolum Seimbang) */
         .header {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
@@ -44,6 +44,7 @@
             gap: 8px;
         }
 
+        /* Kiri: Nama Lokasi Utama */
         .location-info {
             text-align: left;
             cursor: pointer;
@@ -147,7 +148,9 @@
             margin-top: 2px;
         }
 
-        /* Hero Card dengan Kesan Api Biru */
+        /* ----------------------------------------------------
+           KOTAK UTAMA DENGAN KESAN API BIRU (NEON PLASMA GLOW)
+           ---------------------------------------------------- */
         .hero-solat {
             position: relative;
             background: #1a1a1a;
@@ -605,7 +608,6 @@
             </div>
             
             <div class="compass-box">
-                <!-- Butang Khas untuk Minta Kebenaran Sensor Mobile (iOS / Android) -->
                 <button class="compass-permission-btn" id="compassPermBtn" onclick="requestCompassPermission()">
                     🧭 Aktifkan Kompas Peranti
                 </button>
@@ -921,6 +923,7 @@
                     }
 
                     selectZone(matchedZone.code);
+                    gpsBtn.innerText = "📍 Dapatkan Lokasi GPS Semasa";
                     alert(`Lokasi dikesan: ${locData.locality || "Kawasan Anda"}\nZon dilaraskan ke: ${matchedZone.code}`);
                 } catch (e) {
                     console.error(e);
@@ -1013,13 +1016,9 @@
             document.getElementById('storyModal').classList.add('active');
         }
 
-        // ==========================================
-        // FUNGSI KOMPAS & KEBENARAN SENSOR
-        // ==========================================
         function openQiblaModal() {
             document.getElementById('qiblaModal').classList.add('active');
             
-            // Sembunyikan butang kebenaran jika pelayar tidak perlukan kebenaran khas atau bukan iOS
             if (typeof DeviceOrientationEvent === 'undefined' || typeof DeviceOrientationEvent.requestPermission !== 'function') {
                 document.getElementById('compassPermBtn').style.display = 'none';
                 startCompassListening();
@@ -1051,15 +1050,14 @@
         function handleOrientation(event) {
             let heading = null;
             
-            // Semak orientasi mengikut standard peranti (iOS vs Android)
             if (event.webkitCompassHeading !== undefined) {
-                heading = event.webkitCompassHeading; // Sokongan khas Safari / iOS
+                heading = event.webkitCompassHeading;
             } else if (event.alpha !== null) {
-                heading = 360 - event.alpha; // Sokongan Android / Chrome
+                heading = 360 - event.alpha;
             }
 
             if (heading !== null) {
-                const qiblaAngle = 292; // Sudut purata arah kiblat dari Malaysia ke Mekah
+                const qiblaAngle = 292;
                 let needleRotation = qiblaAngle - heading;
                 
                 document.getElementById('compassNeedle').style.transform = `rotate(${needleRotation}deg)`;
