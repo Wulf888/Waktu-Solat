@@ -35,7 +35,7 @@
             overflow: hidden;
         }
 
-        /* Susun Atur Header (Grid 3 Kolum Seimbang) */
+        /* Susun Atur Header */
         .header {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
@@ -44,7 +44,6 @@
             gap: 8px;
         }
 
-        /* Kiri: Nama Lokasi Utama */
         .location-info {
             text-align: left;
             cursor: pointer;
@@ -148,9 +147,7 @@
             margin-top: 2px;
         }
 
-        /* ----------------------------------------------------
-           KOTAK UTAMA DENGAN KESAN API BIRU (NEON PLASMA GLOW)
-           ---------------------------------------------------- */
+        /* Hero Card dengan Kesan Api Biru */
         .hero-solat {
             position: relative;
             background: #1a1a1a;
@@ -407,7 +404,7 @@
             color: #fff;
         }
 
-        .gps-btn {
+        .gps-btn, .compass-permission-btn {
             width: 100%;
             padding: 11px 14px;
             background: rgba(0, 243, 255, 0.12);
@@ -425,7 +422,7 @@
             transition: all 0.2s;
         }
 
-        .gps-btn:hover {
+        .gps-btn:hover, .compass-permission-btn:hover {
             background: rgba(0, 243, 255, 0.25);
             box-shadow: 0 0 12px rgba(0, 243, 255, 0.3);
         }
@@ -479,7 +476,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 0;
+            padding: 10px 0;
             text-align: center;
         }
 
@@ -503,7 +500,7 @@
             background: linear-gradient(to top, #444 50%, #00f3ff 50%);
             border-radius: 2px;
             position: relative;
-            transition: transform 0.2s ease-out;
+            transition: transform 0.1s ease-out;
         }
 
         .compass-needle::after {
@@ -568,9 +565,7 @@
         </div>
 
         <!-- Senarai Waktu Solat -->
-        <div class="solat-list" id="solatListContainer">
-            <!-- Dijana secara automatik oleh JavaScript -->
-        </div>
+        <div class="solat-list" id="solatListContainer"></div>
 
         <!-- Kad Inspirasi Harian -->
         <div class="daily-card" onclick="openStoryModal()">
@@ -601,20 +596,26 @@
         </div>
     </div>
 
-    <!-- MODAL 2: KIBLAT -->
+    <!-- MODAL 2: KIBLAT + BUTANG AKTIFKAN SENSOR -->
     <div class="modal" id="qiblaModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Penunjuk Arah Kiblat</h3>
                 <button class="close-btn" onclick="closeModal('qiblaModal')">&times;</button>
             </div>
+            
             <div class="compass-box">
+                <!-- Butang Khas untuk Minta Kebenaran Sensor Mobile (iOS / Android) -->
+                <button class="compass-permission-btn" id="compassPermBtn" onclick="requestCompassPermission()">
+                    🧭 Aktifkan Kompas Peranti
+                </button>
+
                 <div class="compass-dial">
                     <div class="compass-needle" id="compassNeedle" style="transform: rotate(292deg);"></div>
                 </div>
                 <h4 style="color: #00f3ff; margin-bottom: 6px;">292° Barat Laut (Malaysia)</h4>
                 <p style="font-size: 0.82rem; color: #aaa; line-height: 1.4;" id="qiblaStatusText">
-                    Letakkan telefon secara mendatar. Anak panah menghala ke arah Kaabah (Mekah).
+                    Tekan butang di atas untuk membenarkan akses sensor telefon anda.
                 </p>
             </div>
         </div>
@@ -895,7 +896,7 @@
             }
 
             const gpsBtn = document.querySelector('.gps-btn');
-            gpsBtn.innerText = "Kesan Lokasi GPS...";
+            gpsBtn.innerText = "Mikesan Lokasi GPS...";
 
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const lat = position.coords.latitude;
@@ -1012,26 +1013,64 @@
             document.getElementById('storyModal').classList.add('active');
         }
 
+        // ==========================================
+        // FUNGSI KOMPAS & KEBENARAN SENSOR
+        // ==========================================
         function openQiblaModal() {
             document.getElementById('qiblaModal').classList.add('active');
-            if (window.DeviceOrientationEvent) {
-                window.addEventListener('deviceorientation', handleOrientation);
+            
+            // Sembunyikan butang kebenaran jika pelayar tidak perlukan kebenaran khas atau bukan iOS
+            if (typeof DeviceOrientationEvent === 'undefined' || typeof DeviceOrientationEvent.requestPermission !== 'function') {
+                document.getElementById('compassPermBtn').style.display = 'none';
+                startCompassListening();
             }
         }
 
+        function requestCompassPermission() {
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === 'granted') {
+                            document.getElementById('compassPermBtn').style.display = 'none';
+                            document.getElementById('qiblaStatusText').innerText = "Sensor aktif. Pusingkan telefon anda.";
+                            startCompassListening();
+                        } else {
+                            alert("Kebenaran sensor orientasi ditolak.");
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                startCompassListening();
+            }
+        }
+
+        function startCompassListening() {
+            window.addEventListener('deviceorientation', handleOrientation, true);
+        }
+
         function handleOrientation(event) {
-            if (event.alpha !== null) {
-                const qiblaAngle = 292;
-                const compassHeading = event.webkitCompassHeading || (360 - event.alpha);
-                const needleRotation = qiblaAngle - compassHeading;
+            let heading = null;
+            
+            // Semak orientasi mengikut standard peranti (iOS vs Android)
+            if (event.webkitCompassHeading !== undefined) {
+                heading = event.webkitCompassHeading; // Sokongan khas Safari / iOS
+            } else if (event.alpha !== null) {
+                heading = 360 - event.alpha; // Sokongan Android / Chrome
+            }
+
+            if (heading !== null) {
+                const qiblaAngle = 292; // Sudut purata arah kiblat dari Malaysia ke Mekah
+                let needleRotation = qiblaAngle - heading;
+                
                 document.getElementById('compassNeedle').style.transform = `rotate(${needleRotation}deg)`;
+                document.getElementById('qiblaStatusText').innerText = `Haluan Kompas: ${Math.round(heading)}° | Ikon Kaabah menghala ke Kiblat.`;
             }
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
             if (modalId === 'qiblaModal') {
-                window.removeEventListener('deviceorientation', handleOrientation);
+                window.removeEventListener('deviceorientation', handleOrientation, true);
             }
         }
     </script>
