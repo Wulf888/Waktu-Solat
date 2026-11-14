@@ -5,11 +5,27 @@
   "display": "standalone",
   "background_color": "#0d0d0d",
   "theme_color": "#0d0d0d",
+  "orientation": "portrait",
+  "lang": "ms",
+  "scope": "./",
   "icons": [
     {
       "src": "https://img.icons8.com/fluency/96/prayer.png",
       "sizes": "96x96",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://img.icons8.com/fluency/192/prayer.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://img.icons8.com/fluency/512/prayer.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
