@@ -2,7 +2,9 @@
   "name": "Waktu Solat Malaysia",
   "short_name": "SolatMY",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0d0d0d",
   "theme_color": "#0d0d0d",
   "icons": [
