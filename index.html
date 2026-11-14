@@ -2,44 +2,31 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <!-- Diperkemas untuk sokongan penuh paparan mudah alih (Standalone & Fullscreen) -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
-    <!-- Meta tag khas untuk Android (Chrome) & iOS (Safari) agar nampak seperti App -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0d0d0d">
-
-    <!-- Pautan ke Fail Manifest untuk Fullscreen di Android -->
     <link rel="manifest" href="manifest.json">
 
     <title>Waktu Solat Malaysia • Cyberpunk Edition</title>
     <style>
-        /* Tetapan asas untuk pastikan ia memenuhi skrin penuh peranti */
+        /* Gaya Asas Cyberpunk / Dark Mode Minimalist (Versi Asal Menegak) */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            background-color: #0d0d0d;
-            color: #f0f0f0;
-            overflow-x: hidden;
         }
 
         body {
+            background-color: #0d0d0d;
+            color: #f0f0f0;
+            padding: 16px;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             min-height: 100vh;
-            min-height: 100dvh;
-            padding: env(safe-area-inset-top, 12px) 12px env(safe-area-inset-bottom, 12px) 12px;
         }
 
         .app-container {
@@ -47,12 +34,11 @@
             max-width: 420px;
             background: #141414;
             border-radius: 24px;
-            padding: 20px;
+            padding: 24px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
             border: 1px solid #222;
             position: relative;
             overflow: hidden;
-            margin: auto;
         }
 
         /* Susun Atur Header */
@@ -60,7 +46,7 @@
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             gap: 8px;
         }
 
@@ -77,7 +63,7 @@
         }
 
         .location-info h2 {
-            font-size: 0.95rem;
+            font-size: 1.0rem;
             color: #00f3ff;
             font-weight: 700;
             line-height: 1.2;
@@ -87,7 +73,7 @@
         }
 
         .location-sub {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             color: #777;
             margin-top: 2px;
         }
@@ -102,7 +88,7 @@
         }
 
         .qibla-label {
-            font-size: 0.62rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: #00f3ff;
@@ -112,8 +98,8 @@
         }
 
         .qibla-btn {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             background: rgba(0, 243, 255, 0.08);
             border: 1.5px solid #00f3ff;
@@ -122,31 +108,47 @@
             justify-content: center;
             align-items: center;
             transition: all 0.3s ease;
-            box-shadow: 0 0 12px rgba(0, 243, 255, 0.25);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.25), inset 0 0 8px rgba(0, 243, 255, 0.15);
+        }
+
+        .qibla-container:hover .qibla-btn {
+            background: rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 22px rgba(0, 243, 255, 0.5);
+            transform: scale(1.06);
         }
 
         .qibla-btn svg {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
+            transition: transform 0.5s ease;
         }
 
-        /* Kanan: Tarikh */
+        .qibla-container:hover .qibla-btn svg {
+            transform: rotate(45deg);
+        }
+
+        /* Kanan: Tarikh Hijriah & Masihi */
         .date-section {
             text-align: right;
             cursor: pointer;
             padding: 4px;
             border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .date-section:hover {
+            background: rgba(0, 243, 255, 0.08);
         }
 
         .date-hijri {
-            font-size: 0.72rem;
+            font-size: 0.76rem;
             color: #a5f3fc;
             font-weight: 600;
             line-height: 1.2;
         }
 
         .date-masihi {
-            font-size: 0.65rem;
+            font-size: 0.68rem;
             color: #777;
             margin-top: 2px;
         }
@@ -155,10 +157,10 @@
         .hero-solat {
             position: relative;
             background: #1a1a1a;
-            border-radius: 18px;
-            padding: 20px 16px;
+            border-radius: 20px;
+            padding: 24px 20px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             z-index: 1;
         }
 
@@ -168,7 +170,7 @@
             inset: -3px;
             background: linear-gradient(45deg, #0051ff, #00f3ff, #00ffee, #0051ff);
             background-size: 400%;
-            border-radius: 20px;
+            border-radius: 22px;
             z-index: -1;
             animation: blueFlameGlow 6s linear infinite;
             filter: blur(8px);
@@ -180,7 +182,7 @@
             position: absolute;
             inset: 0;
             background: #161616;
-            border-radius: 18px;
+            border-radius: 20px;
             z-index: -1;
         }
 
@@ -191,28 +193,28 @@
         }
 
         .hero-solat .next-label {
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #00f3ff;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             font-weight: 700;
         }
 
         .hero-solat .solat-name {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 800;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             color: #fff;
             letter-spacing: 1px;
         }
 
         .hero-solat .countdown {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-family: monospace;
             color: #a5f3fc;
             background: rgba(0, 243, 255, 0.08);
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 8px;
             display: inline-block;
             border: 1px solid rgba(0, 243, 255, 0.15);
@@ -222,8 +224,8 @@
         .solat-list {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 24px;
         }
 
         .solat-item {
@@ -231,24 +233,25 @@
             justify-content: space-between;
             align-items: center;
             background: rgba(255, 255, 255, 0.03);
-            padding: 10px 14px;
-            border-radius: 10px;
+            padding: 11px 16px;
+            border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
         }
 
         .solat-item.syuruk {
             background: rgba(255, 255, 255, 0.015);
             border: 1px dashed rgba(255, 255, 255, 0.08);
             color: #999;
-            font-size: 0.85rem;
-            padding: 7px 14px;
+            font-size: 0.88rem;
+            padding: 8px 16px;
         }
 
         .solat-item.current {
             border: 1.5px solid #00f3ff;
             background: linear-gradient(90deg, rgba(0, 243, 255, 0.14), rgba(0, 243, 255, 0.04));
-            box-shadow: 0 0 12px rgba(0, 243, 255, 0.15);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
         }
 
         .solat-item.next {
@@ -257,17 +260,20 @@
         }
 
         .badge {
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 5px;
-            margin-left: 6px;
+            font-size: 0.62rem;
+            padding: 2px 7px;
+            border-radius: 6px;
+            margin-left: 8px;
             text-transform: uppercase;
+            letter-spacing: 0.8px;
             font-weight: 700;
+            vertical-align: middle;
         }
 
         .badge-current {
             background: #00f3ff;
             color: #0d0d0d;
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
         }
 
         .badge-next {
@@ -280,22 +286,30 @@
         .daily-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(0, 243, 255, 0.25);
-            border-radius: 14px;
-            padding: 14px;
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
             cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .daily-card:hover {
+            border-color: #00f3ff;
+            background: rgba(0, 243, 255, 0.04);
         }
 
         .daily-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .daily-tag {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             color: #00f3ff;
             text-transform: uppercase;
+            letter-spacing: 1px;
             font-weight: 700;
         }
 
@@ -304,22 +318,28 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #ccc;
             cursor: pointer;
-            font-size: 0.68rem;
-            padding: 3px 7px;
-            border-radius: 5px;
+            font-size: 0.72rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn:hover {
+            border-color: #00f3ff;
+            color: #00f3ff;
         }
 
         .daily-title {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             color: #fff;
         }
 
         .daily-desc {
-            font-size: 0.82rem;
+            font-size: 0.84rem;
             color: #aaa;
-            line-height: 1.4;
+            line-height: 1.45;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -327,9 +347,9 @@
         }
 
         .read-more-hint {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             color: #00f3ff;
-            margin-top: 6px;
+            margin-top: 8px;
             display: inline-block;
             opacity: 0.8;
         }
@@ -354,11 +374,11 @@
         .modal-content {
             background: #161616;
             border: 1px solid #00f3ff;
-            border-radius: 18px;
+            border-radius: 20px;
             width: 100%;
-            max-width: 380px;
-            max-height: 80vh;
-            padding: 18px;
+            max-width: 400px;
+            max-height: 85vh;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             box-shadow: 0 0 25px rgba(0, 243, 255, 0.2);
@@ -368,51 +388,65 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
-            padding-bottom: 8px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
             border-bottom: 1px solid #262626;
         }
 
         .modal-header h3 {
             color: #00f3ff;
-            font-size: 1rem;
+            font-size: 1.05rem;
         }
 
         .close-btn {
             background: none;
             border: none;
             color: #888;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: #fff;
         }
 
         .gps-btn, .compass-permission-btn {
             width: 100%;
-            padding: 10px;
+            padding: 11px 14px;
             background: rgba(0, 243, 255, 0.12);
             border: 1px solid #00f3ff;
             color: #00f3ff;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             cursor: pointer;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .gps-btn:hover, .compass-permission-btn:hover {
+            background: rgba(0, 243, 255, 0.25);
+            box-shadow: 0 0 12px rgba(0, 243, 255, 0.3);
         }
 
         .search-input {
             width: 100%;
-            padding: 9px 12px;
-            border-radius: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
             border: 1px solid #333;
             background: #0d0d0d;
             color: #fff;
-            margin-bottom: 10px;
-            font-size: 0.88rem;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
             outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #00f3ff;
         }
 
         .zone-list {
@@ -420,47 +454,55 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            padding-right: 4px;
         }
 
         .zone-option {
-            padding: 9px 10px;
+            padding: 10px 12px;
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .zone-option:hover, .zone-option.selected {
+            border-color: #00f3ff;
+            background: rgba(0, 243, 255, 0.08);
         }
 
         .zone-option span {
             color: #00f3ff;
             font-weight: 700;
+            margin-right: 6px;
         }
 
         .compass-box {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 8px 0;
+            padding: 10px 0;
             text-align: center;
         }
 
         .compass-dial {
-            width: 160px;
-            height: 160px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
             border: 2px solid #00f3ff;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-            margin-bottom: 14px;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.2);
+            margin-bottom: 16px;
             background: radial-gradient(circle, rgba(0,243,255,0.08) 0%, rgba(0,0,0,0) 70%);
         }
 
         .compass-needle {
             width: 4px;
-            height: 110px;
+            height: 130px;
             background: linear-gradient(to top, #444 50%, #00f3ff 50%);
             border-radius: 2px;
             position: relative;
@@ -470,26 +512,26 @@
         .compass-needle::after {
             content: '🕋';
             position: absolute;
-            top: -14px;
-            left: -9px;
-            font-size: 1.1rem;
+            top: -16px;
+            left: -10px;
+            font-size: 1.2rem;
         }
 
         .story-full-text {
             overflow-y: auto;
-            font-size: 0.9rem;
-            line-height: 1.6;
+            font-size: 0.92rem;
+            line-height: 1.65;
             color: #ddd;
             white-space: pre-line;
         }
 
         .reflection-box {
-            margin-top: 14px;
-            padding: 10px;
+            margin-top: 16px;
+            padding: 12px;
             background: rgba(0, 243, 255, 0.06);
             border-left: 3px solid #00f3ff;
             border-radius: 6px;
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             color: #a5f3fc;
         }
     </style>
@@ -552,7 +594,7 @@
             </div>
             
             <button class="gps-btn" onclick="detectUserLocationGPS()">
-                📍 Dapatkan Lokasi GPS Semasa
+                📍 Mengesan Lokasi GPS Semasa
             </button>
 
             <input type="text" class="search-input" id="zoneSearchInput" placeholder="Cari daerah atau negeri..." onkeyup="filterZones()">
@@ -577,7 +619,7 @@
                     <div class="compass-needle" id="compassNeedle" style="transform: rotate(292deg);"></div>
                 </div>
                 <h4 style="color: #00f3ff; margin-bottom: 6px;">292° Barat Laut (Malaysia)</h4>
-                <p style="font-size: 0.8rem; color: #aaa; line-height: 1.4;" id="qiblaStatusText">
+                <p style="font-size: 0.82rem; color: #aaa; line-height: 1.4;" id="qiblaStatusText">
                     Tekan butang di atas untuk membenarkan akses sensor telefon anda.
                 </p>
             </div>
@@ -591,7 +633,7 @@
                 <h3 id="modalStoryTag">#SahabatHariIni</h3>
                 <button class="close-btn" onclick="closeModal('storyModal')">&times;</button>
             </div>
-            <h4 style="color: #fff; font-size: 1.1rem; margin-bottom: 10px;" id="modalStoryTitle">Tajuk</h4>
+            <h4 style="color: #fff; font-size: 1.15rem; margin-bottom: 12px;" id="modalStoryTitle">Tajuk</h4>
             <div class="story-full-text" id="modalStoryBody">Isi kandungan penuh...</div>
             <div class="reflection-box" id="modalStoryReflection">Pengajaran...</div>
         </div>
@@ -884,16 +926,16 @@
                     }
 
                     selectZone(matchedZone.code);
-                    gpsBtn.innerText = "📍 Dapatkan Lokasi GPS Semasa";
+                    gpsBtn.innerText = "📍 Mengesan Lokasi GPS Semasa";
                     alert(`Lokasi dikesan: ${locData.locality || "Kawasan Anda"}\nZon dilaraskan ke: ${matchedZone.code}`);
                 } catch (e) {
                     console.error(e);
                     alert("Gagal memproses koordinat GPS. Sila pilih zon secara manual.");
-                    gpsBtn.innerText = "📍 Dapatkan Lokasi GPS Semasa";
+                    gpsBtn.innerText = "📍 Mengesan Lokasi GPS Semasa";
                 }
             }, (error) => {
                 alert("Akses GPS ditolak atau tidak tersedia. Sila benarkan akses lokasi pada pelayar anda.");
-                gpsBtn.innerText = "📍 Dapatkan Lokasi GPS Semasa";
+                gpsBtn.innerText = "📍 Mengesan Lokasi GPS Semasa";
             }, { timeout: 10000 });
         }
 
