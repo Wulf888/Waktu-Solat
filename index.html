@@ -11,6 +11,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0d0d0d">
 
+    <!-- Pautan ke Fail Manifest untuk Fullscreen di Android -->
+    <link rel="manifest" href="manifest.json">
+
     <title>Waktu Solat Malaysia • Cyberpunk Edition</title>
     <style>
         /* Tetapan asas untuk pastikan ia memenuhi skrin penuh peranti */
@@ -35,7 +38,7 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            min-height: 100dvh; /* Sokongan skrin dinamik Android/iOS terkini */
+            min-height: 100dvh;
             padding: env(safe-area-inset-top, 12px) 12px env(safe-area-inset-bottom, 12px) 12px;
         }
 
@@ -938,7 +941,6 @@
             if (dailyMode === 'sahabat') {
                 return sahabatStories[dayIndex % sahabatStories.length];
             } else {
-                // Diperbetulkan rujukan indeks hadis harian
                 return hadithList[dayIndex % hadithList.length];
             }
         }
